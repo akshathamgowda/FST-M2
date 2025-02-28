@@ -1,0 +1,17 @@
+--Drop tables
+DROP TABLE zipcodes;
+
+--create the zipcods table with patitions and bucketes
+CREATE TABLE zipcodes(RecordNumber int, Country string, City string, Zipcode int)
+PARTITIONED BY (state string)
+CLUSTERED BY (Zipcode) INTO 3 BUCKETS
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ',';
+
+--Load data into the tables
+LOAD DATA LOCAL INPATH '/root/zipcodes.csv'
+INTO TABLE zipcodes;
+
+--Execute
+INSERT OVERWRITE LOCAL DIRECTORY '/root/Act9output'
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+SELECT * FROM zipcodes WHERE state='PR' and Zipcode=704;
